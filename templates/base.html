@@ -14,6 +14,7 @@
 <body>
 
 {% include 'components/header.html' %}
+{% include 'components/header.html' %}
 
 <main>
     {% block content %}
@@ -21,6 +22,7 @@
     {% endblock content %}
 </main>
 
+{% include 'components/footer.html' %}
 {% include 'components/footer.html' %}
 
 <script src="{% static 'js/script.js' %}"></script>

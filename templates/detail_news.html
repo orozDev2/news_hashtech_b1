@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    | {{ news.title }}
+{% endblock title %}
+
+{% block content %}
+
+    <h2>{{ news.title }}</h2>
+    <p>Категория: {{ news.category.name }}</p>
+    <p>Теги:
+        {% for tag in news.tags.all %}
+            {{ tag.name }} /
+        {% endfor %}
+    </p>
+
+    <p>{{ news.content }}</p>
+    <p>
+        {% if news.link and news.link.whatsapp %} <a href="{{ news.link.whatsapp }}">Whatsapp</a> / <br> {% endif %}
+        {% if news.link and news.link.telegram %} <a href="{{ news.link.telegram }}">telegram</a> / <br> {% endif %}
+        {% if news.link and news.link.instagram %} <a href="{{ news.link.instagram }}">instagram</a> / <br> {% endif %}
+        {% if news.link and news.link.facebook %} <a href="{{ news.link.facebook }}">facebook</a> / <br> {% endif %}
+    </p>
+    <p style="text-align: end">{{ news.date }} - {{ news.author }}</p>
+
+{% endblock content %}

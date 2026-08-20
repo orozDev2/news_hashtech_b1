@@ -1,0 +1,19 @@
+<header>
+    <h1><a href="{% url 'main_page' %}">My News</a></h1>
+    <nav>
+        <ul>
+            <li><a href="{% url 'main_page' %}">Home</a></li>
+            <li><a href="#">News</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="{% url 'youtube' %}">Youtube</a></li>
+        </ul>
+        <div>
+            <form action="{% url 'list_news' %}">
+                <input type="search" name="search" value="{{ request.GET.search }}">
+                <button type="submit">Поиск</button>
+            </form>
+
+        </div>
+    </nav>
+</header>

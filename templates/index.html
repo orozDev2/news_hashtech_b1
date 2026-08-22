@@ -23,7 +23,7 @@
             <div class="date">{{ item.date }}</div>
             <h3><a href="{% url 'detail_news' news_id=item.id %}">{{ item.title }}</a></h3>
             {% if item.image %}
-                <p><img src="{{ item.image.url }}" width="400px" alt=""></p>
+                <p><img src="{{ item.image.url }}" width="400px" alt="{{ item.title }}"></p>
             {% else %}
                 <p><img src="https://picsum.photos/700/300" width="400px" alt=""></p>
             {% endif %}

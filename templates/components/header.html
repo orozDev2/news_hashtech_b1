@@ -1,19 +1,24 @@
-<header>
-    <h1><a href="{% url 'main_page' %}">My News</a></h1>
-    <nav>
-        <ul>
-            <li><a href="{% url 'main_page' %}">Home</a></li>
-            <li><a href="#">News</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
-            <li><a href="{% url 'youtube' %}">Youtube</a></li>
-        </ul>
-        <div>
-            <form action="{% url 'list_news' %}">
-                <input type="search" name="search" value="{{ request.GET.search }}">
-                <button type="submit">Поиск</button>
-            </form>
-
+<header class="site-header">
+    <div class="topline">
+        <div class="shell topline__inner">
+            <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Бишкек, Кыргызстан</span>
+            <span class="topline__date">Новости, которым можно доверять</span>
         </div>
-    </nav>
+    </div>
+    <div class="shell header-main">
+        <a class="brand" href="{% url 'main_page' %}" aria-label="My News — главная">
+            <span class="brand__mark">M</span><span class="brand__text">MY <strong>NEWS</strong></span>
+        </a>
+        <nav class="primary-nav" aria-label="Основная навигация">
+            <a class="{% if request.resolver_match.url_name == 'list_news' or request.resolver_match.url_name == 'main_page' %}is-active{% endif %}" href="{% url 'main_page' %}">Главная</a>
+            <a href="{% url 'list_news' %}#news-feed">Последние</a>
+            <a href="{% url 'list_news' %}#categories">Рубрики</a>
+            <a href="{% url 'youtube' %}" target="_blank" rel="noopener">Видео <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+        </nav>
+        <form class="header-search" action="{% url 'list_news' %}" role="search">
+            <label class="sr-only" for="site-search">Поиск по новостям</label>
+            <input id="site-search" type="search" name="search" value="{{ request.GET.search }}" placeholder="Найти новость…">
+            <button type="submit" aria-label="Найти"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></button>
+        </form>
+    </div>
 </header>

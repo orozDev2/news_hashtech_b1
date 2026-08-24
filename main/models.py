@@ -53,7 +53,8 @@ class News(models.Model):
                                  on_delete=models.PROTECT, verbose_name='категория', related_name='news', null=True)
     tags = models.ManyToManyField('main.Tag', verbose_name='теги', related_name='news')
     content = models.TextField(verbose_name='контент')
-    date = models.DateTimeField(verbose_name='дата добавления')
+    date = models.DateTimeField(verbose_name='дата добавления', auto_now_add=True)
+    update_date = models.DateTimeField(verbose_name='дата обновления', auto_now=True)
     author = models.CharField(verbose_name='автор')
 
     def __str__(self):

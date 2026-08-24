@@ -1,3 +1,20 @@
-<footer>
-    &copy; 2026 My News. All rights reserved.
+<footer class="site-footer" id="about">
+    <div class="shell footer-grid">
+        <div>
+            <a class="brand brand--footer" href="{% url 'main_page' %}"><span class="brand__mark">M</span><span class="brand__text">MY <strong>NEWS</strong></span></a>
+            <p class="footer-copy">Главное из Кыргызстана и мира — коротко, ясно и по существу.</p>
+        </div>
+        <div class="footer-nav">
+            <span>Разделы</span><a href="{% url 'main_page' %}">Главная</a><a href="{% url 'list_news' %}#news-feed">Все новости</a><a href="{% url 'list_news' %}#categories">Категории</a>
+        </div>
+        <div class="footer-socials">
+            <span>Мы в сети</span>
+            <div>
+                <a href="https://t.me/" target="_blank" rel="noopener" aria-label="Telegram"><i class="fa-brands fa-telegram"></i></a>
+                <a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="{% url 'youtube' %}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="shell footer-bottom"><span>&copy; 2026 My News. Все права защищены.</span><a href="#main-content">Наверх <i class="fa-solid fa-arrow-up" aria-hidden="true"></i></a></div>
 </footer>

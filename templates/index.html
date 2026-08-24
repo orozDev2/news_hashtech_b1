@@ -1,75 +1,62 @@
 {% extends 'base.html' %}
-
 {% load static %}
-
 {% block content %}
+<section class="hero">
+    <div class="shell hero__inner">
+        <div class="hero__eyebrow"><span></span> Информационная картина дня</div>
+        <h1>События, которые<br><em>имеют значение.</em></h1>
+        <p>Оперативно рассказываем о главном в Кыргызстане и за его пределами.</p>
+        <a class="hero__link" href="#news-feed">Читать последние новости <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
+    </div>
+    <div class="hero__accent" aria-hidden="true"></div>
+</section>
 
-    <p align="center">
-        <img src="{% static 'img/logo.jpeg' %}" width="100px" alt="">
-    </p>
+<section class="category-section shell" id="categories" aria-labelledby="categories-title">
+    <div class="section-heading section-heading--compact">
+        <div><span class="section-kicker">Навигация</span><h2 id="categories-title">Темы дня</h2></div><span class="section-line" aria-hidden="true"></span>
+    </div>
+    <div class="category-list">
+        <a class="category-chip {% if not request.resolver_match.kwargs.category_id %}is-active{% endif %}" href="{% url 'list_news' %}"><i class="fa-solid fa-border-all" aria-hidden="true"></i> Все новости</a>
+        {% for category in categories %}<a class="category-chip {% if request.resolver_match.kwargs.category_id == category.id %}is-active{% endif %}" href="{% url 'news_by_category' category_id=category.id %}">{{ category.name }}</a>{% endfor %}
+    </div>
+</section>
 
-    <p>
-        <b>Категории:</b>
-        {% for category in categories %}
-            <a href="{% url 'news_by_category' category_id=category.id %}">{{ category.name }}</a> /
+<section class="news-section shell" id="news-feed" aria-labelledby="news-title">
+    <div class="section-heading">
+        <div><span class="section-kicker">Свежая лента</span><h2 id="news-title">{% if request.GET.search %}Результаты поиска{% else %}Последние новости{% endif %}</h2></div>
+        {% if request.GET.search %}<a class="reset-search" href="{% url 'list_news' %}">Сбросить поиск <i class="fa-solid fa-xmark" aria-hidden="true"></i></a>{% else %}<span class="section-line" aria-hidden="true"></span>{% endif %}
+    </div>
+    {% if request.GET.search %}<div class="search-summary">По запросу «<strong>{{ request.GET.search }}</strong>»</div>{% endif %}
+
+    <div class="news-grid">
+        {% for item in news %}
+            <article class="news-card">
+                <a class="news-card__image" href="{% url 'detail_news' news_id=item.id %}" aria-label="Читать: {{ item.title }}">
+                    {% if item.image %}<img src="{{ item.image.url }}" alt="{{ item.title }}" loading="lazy">
+                    {% else %}<span class="news-card__placeholder" aria-hidden="true"><i class="fa-regular fa-newspaper"></i><small>MY NEWS</small></span>{% endif %}
+                    {% if item.category %}<span class="news-card__category">{{ item.category.name }}</span>{% endif %}
+                </a>
+                <div class="news-card__body">
+                    <div class="news-card__meta"><time datetime="{{ item.date|date:'c' }}"><i class="fa-regular fa-clock" aria-hidden="true"></i> {{ item.date|date:"d.m.Y · H:i" }}</time></div>
+                    <h3><a href="{% url 'detail_news' news_id=item.id %}">{{ item.title }}</a></h3>
+                    {% if item.tags.all %}<div class="tag-list" aria-label="Теги">{% for tag in item.tags.all %}<span>#{{ tag.name }}</span>{% endfor %}</div>{% endif %}
+                    <div class="news-card__footer">
+                        <span class="author"><span class="author__avatar">{{ item.author|first|upper }}</span> {{ item.author }}</span>
+                        <a class="read-more" href="{% url 'detail_news' news_id=item.id %}" aria-label="Читать новость {{ item.title }}">Читать <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-state"><i class="fa-regular fa-folder-open" aria-hidden="true"></i><h3>Новостей пока нет</h3><p>Попробуйте изменить запрос или загляните немного позже.</p><a href="{% url 'list_news' %}">Вернуться ко всем новостям</a></div>
         {% endfor %}
+    </div>
 
-    </p>
-
-    <h2>Latest News</h2>
-
-    {% for item in news %}
-        <div class="news-item">
-            <div class="date">{{ item.date }}</div>
-            <h3><a href="{% url 'detail_news' news_id=item.id %}">{{ item.title }}</a></h3>
-            {% if item.image %}
-                <p><img src="{{ item.image.url }}" width="400px" alt="{{ item.title }}"></p>
-            {% else %}
-                <p><img src="https://picsum.photos/700/300" width="400px" alt=""></p>
-            {% endif %}
-            <p>Категория: {{ item.category.name }}</p>
-            <p>Теги:
-                {% for tag in item.tags.all %}
-                    {{ tag.name }} /
-                {% endfor %}
-            </p>
-            <p>{{ item.content }}</p>
-            <p>Автор: {{ item.author }}</p>
-        </div>
-    {% empty %}
-        <h3>Нету новостей</h3>
-    {% endfor %}
-
-    <nav>
-        <ul class="pagination">
-            {% if news.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ news.previous_page_number }}">
-                        <i class="fa-solid fa-angle-left"></i>
-                    </a>
-                </li>
-            {% endif %}
-
-            {% for i in news.paginator.page_range %}
-                {% if news.number == i %}
-                    <li class="page-item active">
-                        <span class="page-link">{{ i }}</span>
-                    </li>
-                {% else %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-
-            {% if news.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ news.next_page_number }}">
-                        <i class="fa-solid fa-angle-right"></i>
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
-
+    {% if news.paginator.num_pages > 1 %}
+        <nav class="pagination-wrap" aria-label="Навигация по страницам"><ul class="pagination">
+            {% if news.has_previous %}<li class="page-item page-item--arrow"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search|urlencode }}&{% endif %}page={{ news.previous_page_number }}#news-feed" aria-label="Предыдущая страница"><i class="fa-solid fa-angle-left" aria-hidden="true"></i></a></li>{% endif %}
+            {% for i in news.paginator.page_range %}{% if news.number == i %}<li class="page-item active"><span class="page-link" aria-current="page">{{ i }}</span></li>{% else %}<li class="page-item"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search|urlencode }}&{% endif %}page={{ i }}#news-feed">{{ i }}</a></li>{% endif %}{% endfor %}
+            {% if news.has_next %}<li class="page-item page-item--arrow"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search|urlencode }}&{% endif %}page={{ news.next_page_number }}#news-feed" aria-label="Следующая страница"><i class="fa-solid fa-angle-right" aria-hidden="true"></i></a></li>{% endif %}
+        </ul></nav>
+    {% endif %}
+</section>
 {% endblock content %}

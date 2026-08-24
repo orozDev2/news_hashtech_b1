@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% block title %} — страница не найдена{% endblock title %}
 {% block content %}
-    <h2>Страница не найдена - 404</h2>
+<section class="error-page shell"><div class="error-page__number">404</div><span class="section-kicker">Такой страницы нет</span><h1>Похоже, эта новость потерялась</h1><p>Адрес мог измениться или материал был перемещён. Вернитесь на главную — там уже есть что почитать.</p><a class="button-primary" href="{% url 'main_page' %}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> На главную</a></section>
 {% endblock content %}

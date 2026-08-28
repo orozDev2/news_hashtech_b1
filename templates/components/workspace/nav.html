@@ -1,0 +1,25 @@
+<header class="workspace-header">
+    <div class="shell workspace-header__inner">
+        <a class="brand workspace-brand" href="{% url 'workspace' %}" aria-label="My News Workspace — главная">
+            <span class="brand__mark">M</span>
+            <span class="brand__text">MY <strong>NEWS</strong></span>
+            <span class="workspace-brand__label">Workspace</span>
+        </a>
+
+        <nav class="workspace-nav" aria-label="Навигация рабочего пространства">
+            <a class="{% if request.resolver_match.url_name == 'workspace' %}is-active{% endif %}" href="{% url 'workspace' %}">
+                <i class="fa-solid fa-table-columns" aria-hidden="true"></i> Мои публикации
+            </a>
+            <a class="{% if request.resolver_match.url_name == 'create_news' %}is-active{% endif %}" href="{% url 'create_news' %}">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i> Создать
+            </a>
+        </nav>
+
+        <div class="workspace-user">
+            <a class="workspace-user__site" href="{% url 'main_page' %}" title="Перейти на сайт">
+                На сайт <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+            </a>
+            <span class="workspace-user__avatar" aria-hidden="true">M</span>
+        </div>
+    </div>
+</header>

@@ -1,0 +1,95 @@
+{% extends "workspace/base.html" %}
+
+{% block title %} — мои публикации{% endblock title %}
+
+{% block content %}
+<section class="workspace-shell shell">
+    <div class="workspace-welcome">
+        <div>
+            <span class="workspace-eyebrow"><i class="fa-solid fa-sparkles" aria-hidden="true"></i> Рабочее пространство</span>
+            <h1>Мои публикации</h1>
+            <p>Создавайте материалы и управляйте новостями в одном месте.</p>
+        </div>
+        <a class="workspace-create-button" href="{% url 'create_news' %}">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i> Добавить новость
+        </a>
+    </div>
+
+    <div class="workspace-stats" aria-label="Статистика публикаций">
+        <div class="workspace-stat">
+            <span class="workspace-stat__icon workspace-stat__icon--red"><i class="fa-regular fa-newspaper" aria-hidden="true"></i></span>
+            <div><strong>{{ news.paginator.count }}</strong><span>Всего публикаций</span></div>
+        </div>
+        <div class="workspace-stat">
+            <span class="workspace-stat__icon"><i class="fa-regular fa-file-lines" aria-hidden="true"></i></span>
+            <div><strong>{{ news|length }}</strong><span>На этой странице</span></div>
+        </div>
+        <div class="workspace-stat">
+            <span class="workspace-stat__icon workspace-stat__icon--green"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></span>
+            <div><strong>Активно</strong><span>Состояние ленты</span></div>
+        </div>
+    </div>
+
+    <div class="workspace-panel" id="workspace-news">
+        <div class="workspace-panel__heading">
+            <div>
+                <h2>Все материалы</h2>
+                <p>Просматривайте и редактируйте свои публикации</p>
+            </div>
+            <span class="workspace-count">{{ news.paginator.count }} материалов</span>
+        </div>
+
+        <div class="workspace-posts">
+            {% for item in news %}
+                <article class="workspace-post">
+                    <a class="workspace-post__image" href="{% url 'detail_news' news_id=item.id %}" aria-label="Открыть: {{ item.title }}">
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.title }}" loading="lazy">
+                        {% else %}
+                            <span><i class="fa-regular fa-image" aria-hidden="true"></i></span>
+                        {% endif %}
+                    </a>
+
+                    <div class="workspace-post__content">
+                        <div class="workspace-post__meta">
+                            {% if item.category %}<span class="workspace-post__category">{{ item.category.name }}</span>{% endif %}
+                            <time datetime="{{ item.date|date:'c' }}"><i class="fa-regular fa-clock" aria-hidden="true"></i> {{ item.date|date:"d.m.Y · H:i" }}</time>
+                        </div>
+                        <h3><a href="{% url 'detail_news' news_id=item.id %}">{{ item.title }}</a></h3>
+                        <div class="workspace-post__details">
+                            <span><i class="fa-regular fa-user" aria-hidden="true"></i> {{ item.author }}</span>
+                            {% if item.tags.all %}<span class="workspace-post__tags">{% for tag in item.tags.all %}#{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</span>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="workspace-post__actions" aria-label="Действия с публикацией">
+                        <a class="post-action post-action--view" href="{% url 'detail_news' news_id=item.id %}" title="Посмотреть" aria-label="Посмотреть {{ item.title }}"><i class="fa-regular fa-eye" aria-hidden="true"></i></a>
+                        <a class="post-action post-action--edit" href="" title="Редактировать" aria-label="Редактировать {{ item.title }}"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i></a>
+                        <a class="post-action post-action--delete" href="{% url "delete_news" news_id=item.id %}" title="Удалить" aria-label="Удалить {{ item.title }}"><i class="fa-solid fa-trash" aria-hidden="true"></i></a>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="workspace-empty">
+                    <span class="workspace-empty__icon"><i class="fa-regular fa-folder-open" aria-hidden="true"></i></span>
+                    <h3>В рабочем пространстве пока пусто</h3>
+                    <p>Создайте первую новость — она появится здесь и в общей ленте.</p>
+                    <a href="{% url 'create_news' %}"><i class="fa-solid fa-plus" aria-hidden="true"></i> Создать новость</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if news.paginator.num_pages > 1 %}
+        <nav class="pagination-wrap workspace-pagination" aria-label="Навигация по страницам">
+            <ul class="pagination">
+                {% if news.has_previous %}<li class="page-item page-item--arrow"><a class="page-link" href="?page={{ news.previous_page_number }}#workspace-news" aria-label="Предыдущая страница"><i class="fa-solid fa-angle-left" aria-hidden="true"></i></a></li>{% endif %}
+                {% for i in news.paginator.page_range %}
+                    {% if news.number == i %}<li class="page-item active"><span class="page-link" aria-current="page">{{ i }}</span></li>
+                    {% else %}<li class="page-item"><a class="page-link" href="?page={{ i }}#workspace-news">{{ i }}</a></li>{% endif %}
+                {% endfor %}
+                {% if news.has_next %}<li class="page-item page-item--arrow"><a class="page-link" href="?page={{ news.next_page_number }}#workspace-news" aria-label="Следующая страница"><i class="fa-solid fa-angle-right" aria-hidden="true"></i></a></li>{% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+</section>
+{% endblock content %}

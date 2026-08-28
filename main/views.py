@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
-from main.models import News, Category
+from main.models import News, Category, Tag
 import datetime
 
 
@@ -57,5 +57,54 @@ def news_by_category(request, category_id):
     return render(request, 'index.html', {'news': news, 'categories': categories})
 
 
+def workspace(request):
+    news = News.objects.all()
+
+    page = request.GET.get('page', 1)
+    page_size = request.GET.get('page_size', 3)
+
+    pagin = Paginator(news, page_size)
+    news = pagin.get_page(page)
+    
+    return render(request, 'workspace/index.html', {'news': news})
+
+
+
+def create_news(request):
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        image = request.FILES.get('image')
+        author = request.POST.get('author')
+        content = request.POST.get('content')
+        category = Category.objects.get(id=int(request.POST.get('category')))
+        tags_id = list(map(int, request.POST.getlist('tags')))
+        tags = Tag.objects.filter(id__in=tags_id)
+        
+        news = News.objects.create(
+            title=title,
+            author=author,
+            content=content,
+            category=category,
+        )
+        
+        if image:
+            news.image.save(image.name, image)
+        
+        news.tags.add(*tags)
+        
+        news.save()
+        
+        return redirect('workspace')
+        
+    categories = Category.objects.all()
+    tags = Tag.objects.all()
+    return render(request, 'workspace/create_news.html', {'categories': categories, 'tags': tags})
+
+
+def delete_news(request, news_id):
+    news = get_object_or_404(News, pk=news_id)
+    news.delete()
+    return redirect('workspace')
 
 # Create your views here.

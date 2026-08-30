@@ -1,0 +1,88 @@
+{% extends 'workspace/base.html' %}
+
+{% block title %} — редактировать новость "{{ news.title }}"{% endblock title %}
+
+{% block content %}
+<section class="create-hero">
+  <div class="shell create-hero__inner">
+    <a class="back-link" href="{% url 'workspace' %}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> К моим публикациям</a>
+    <span class="create-hero__kicker"><i class="fa-regular fa-pen-to-square" aria-hidden="true"></i> Рабочее пространство</span>
+    <h1>Редактировать новость "{{ news.title }}"</h1>
+    <p>Заполните карточку материала — добавьте ясный заголовок, текст и рубрику.</p>
+  </div>
+</section>
+
+<section class="create-section shell">
+  <form class="news-form" method="POST" enctype="multipart/form-data" action="{% url "update_news" news_id=news.id %}">
+    {% csrf_token %}
+    <div class="news-form__heading">
+      <div>
+        <span class="section-kicker">Новый материал</span>
+        <h2>Основная информация</h2>
+      </div>
+      <span class="required-note"><span>*</span> обязательные поля</span>
+    </div>
+
+    <div class="form-field form-field--wide">
+      <label for="title_inp">Заголовок <span aria-hidden="true">*</span></label>
+      <input type="text" name="title" value="{{ news.title }}" id="title_inp" placeholder="Что произошло? Сформулируйте главное" autocomplete="off" required>
+      <small>Короткий и конкретный заголовок лучше читается в новостной ленте.</small>
+    </div>
+
+    <div class="form-field form-field--wide">
+      <label for="image_inp">Изображение</label>
+      <div class="file-control">
+        <i class="fa-regular fa-image" aria-hidden="true"></i>
+        <div><strong>Добавьте обложку новости чтобы заменить текущую</strong><small>Подойдут JPG, PNG или WEBP</small></div>
+        <input type="file" name="image" id="image_inp" accept="image/*">
+      </div>
+    </div>
+
+    <div class="form-field form-field--wide">
+      <label for="content_inp">Текст новости <span aria-hidden="true">*</span></label>
+      <textarea name="content" id="content_inp" rows="10" placeholder="Расскажите о событии подробнее…" required>{{ news.content }}</textarea>
+      <small>Разделяйте текст на абзацы, чтобы материал было удобно читать.</small>
+    </div>
+
+    <div class="form-field">
+      <label for="author_inp">Автор <span aria-hidden="true">*</span></label>
+      <div class="input-with-icon">
+        <i class="fa-regular fa-user" aria-hidden="true"></i>
+        <input type="text" name="author" value="{{ news.author }}" id="author_inp" placeholder="Имя автора" autocomplete="name" required>
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label for="category_inp">Категория <span aria-hidden="true">*</span></label>
+      <select name="category" id="category_inp" required>
+        <option value="" disabled>Выберите категорию</option>
+        {% for category in categories %}
+            <option {% if category == news.category %}selected{% endif %} value="{{ category.id }}">
+                {{ category.name }}
+            </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-field form-field--wide">
+      <label for="tags_inp">Теги</label>
+      <select name="tags" id="tags_inp" multiple aria-describedby="tags_help">
+        {% for tag in tags %}
+          <option {% if tag in news.tags.all %}selected{% endif %} value="{{ tag.id }}">#{{ tag.name }}</option>
+        {% endfor %}
+      </select>
+      <small id="tags_help">Можно выбрать несколько тегов, удерживая Ctrl или Command.</small>
+    </div>
+
+    <div class="news-form__actions">
+      <a href="{% url 'workspace' %}" class="form-cancel">Отмена</a>
+      <button class="publish-button" type="submit"><i class="fa-solid fa-plus" aria-hidden="true"></i> Сохранить новость</button>
+    </div>
+  </form>
+
+  <aside class="editor-note">
+    <div class="editor-note__icon"><i class="fa-regular fa-lightbulb" aria-hidden="true"></i></div>
+    <div><strong>Перед публикацией</strong><p>Проверьте факты, имена, даты и источник информации.</p></div>
+  </aside>
+</section>
+{% endblock content %}

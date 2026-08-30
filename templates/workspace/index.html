@@ -64,7 +64,7 @@
 
                     <div class="workspace-post__actions" aria-label="Действия с публикацией">
                         <a class="post-action post-action--view" href="{% url 'detail_news' news_id=item.id %}" title="Посмотреть" aria-label="Посмотреть {{ item.title }}"><i class="fa-regular fa-eye" aria-hidden="true"></i></a>
-                        <a class="post-action post-action--edit" href="" title="Редактировать" aria-label="Редактировать {{ item.title }}"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i></a>
+                        <a class="post-action post-action--edit" href="{% url "update_news" news_id=item.id %}" title="Редактировать" aria-label="Редактировать {{ item.title }}"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i></a>
                         <a class="post-action post-action--delete" href="{% url "delete_news" news_id=item.id %}" title="Удалить" aria-label="Удалить {{ item.title }}"><i class="fa-solid fa-trash" aria-hidden="true"></i></a>
                     </div>
                 </article>

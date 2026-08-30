@@ -107,4 +107,39 @@ def delete_news(request, news_id):
     news.delete()
     return redirect('workspace')
 
+
+def update_news(request, news_id):
+    news = get_object_or_404(News, pk=news_id)
+    
+    if request.method == 'POST':
+        news.title = request.POST.get('title')
+        news.author = request.POST.get('author')
+        news.content = request.POST.get('content')
+        news.category = Category.objects.get(id=int(request.POST.get('category')))
+        
+        image = request.FILES.get('image')
+        
+        if image:
+            news.image.save(image.name, image)
+        
+
+        tags_id = list(map(int, request.POST.getlist('tags')))
+        tags = Tag.objects.filter(id__in=tags_id)
+        
+        news.tags.clear()
+        # news.tags.remove(tags[0])
+        news.tags.add(*tags)
+        
+        news.save()
+        
+        return redirect('workspace')
+        
+        
+    
+    categories = Category.objects.all()
+    tags = Tag.objects.all()
+    
+    return render(request, 'workspace/update_news.html', 
+                  {'news': news, 'categories': categories, 'tags': tags})
+
 # Create your views here.

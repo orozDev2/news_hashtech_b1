@@ -9,5 +9,6 @@ urlpatterns = [
     path('workspace/', views.workspace, name='workspace'),
     path('workspace/create-news/', views.create_news, name='create_news'),
     path('workspace/delete-news/<int:news_id>/', views.delete_news, name='delete_news'),
+    path('workspace/update-news/<int:news_id>/', views.update_news, name='update_news'),
     path('', views.main_page, name='main_page'),
 ]

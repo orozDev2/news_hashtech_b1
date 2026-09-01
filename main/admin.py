@@ -24,10 +24,20 @@ class NewsAdmin(admin.ModelAdmin):
             return mark_safe(f'<img src="{obj.image.url}" width="100%">')
         return '-'
 
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    list_display_links = ('id', 'name',)
 
 
-admin.site.register(Category)
-admin.site.register(Tag)
-admin.site.register(NewsLinks)
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    list_display_links = ('id', 'name',)
+
+@admin.register(NewsLinks)
+class NewsLinksAdmin(admin.ModelAdmin):
+    list_display = ('id', 'news', 'whatsapp', 'telegram', 'instagram', 'facebook')
+    list_display_links = ('id', 'news',)
 
 # Register your models here.

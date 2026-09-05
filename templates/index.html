@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
+
 {% load static %}
+
 {% block content %}
 <section class="hero">
     <div class="shell hero__inner">
@@ -15,10 +17,7 @@
     <div class="section-heading section-heading--compact">
         <div><span class="section-kicker">Навигация</span><h2 id="categories-title">Темы дня</h2></div><span class="section-line" aria-hidden="true"></span>
     </div>
-    <div class="category-list">
-        <a class="category-chip {% if not request.resolver_match.kwargs.category_id %}is-active{% endif %}" href="{% url 'list_news' %}"><i class="fa-solid fa-border-all" aria-hidden="true"></i> Все новости</a>
-        {% for category in categories %}<a class="category-chip {% if request.resolver_match.kwargs.category_id == category.id %}is-active{% endif %}" href="{% url 'news_by_category' category_id=category.id %}">{{ category.name }}</a>{% endfor %}
-    </div>
+    {% include "components/category_filter.html" %}
 </section>
 
 <section class="news-section shell" id="news-feed" aria-labelledby="news-title">

@@ -25,8 +25,7 @@ def list_page(request):
     pagin = Paginator(news, page_size)
     news = pagin.get_page(page)
 
-    categories = Category.objects.all()
-    return render(request, 'index.html', {'news': news, 'categories': categories})
+    return render(request, 'index.html', {'news': news})
 
 
 
@@ -36,7 +35,6 @@ def detail_news(request, news_id):
     except News.DoesNotExist:
         return render(request, 'extra_pages/not_found_404.html')
 
-    print(news)
     return render(request, 'detail_news.html', {'news': news})
 
 
@@ -53,8 +51,7 @@ def youtube(request):
 def news_by_category(request, category_id):
     news = News.objects.filter(category__id=category_id)
 
-    categories = Category.objects.all()
-    return render(request, 'index.html', {'news': news, 'categories': categories})
+    return render(request, 'index.html', {'news': news})
 
 
 def workspace(request):

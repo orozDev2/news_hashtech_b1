@@ -1,27 +1,66 @@
 {% extends 'base.html' %}
-{% block title %} — {{ news.title }}{% endblock title %}
+{% load main_filters %}
+
+{% block title %}
+  — {{ news.title }}
+{% endblock %}
 {% block content %}
-<article class="article-page">
-    <header class="article-hero"><div class="shell article-hero__inner">
+  <article class="article-page">
+    <header class="article-hero">
+      <div class="shell article-hero__inner">
         <a class="back-link" href="{% url 'list_news' %}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> К ленте новостей</a>
-        {% if news.category %}<a class="article-category" href="{% url 'news_by_category' category_id=news.category.id %}">{{ news.category.name }}</a>{% endif %}
+        {% if news.category %}
+          <a class="article-category" href="{% url 'news_by_category' category_id=news.category.id %}">{{ news.category.name }}</a>
+        {% endif %}
         <h1>{{ news.title }}</h1>
-        <div class="article-meta"><span class="author"><span class="author__avatar">{{ news.author|first|upper }}</span> {{ news.author }}</span><time datetime="{{ news.date|date:'c' }}"><i class="fa-regular fa-calendar" aria-hidden="true"></i> {{ news.date|date:"d E Y, H:i" }}</time></div>
-    </div></header>
-    <div class="shell article-layout">
-        <div class="article-main">
-            {% if news.image %}<figure class="article-image"><img src="{{ news.image.url }}" alt="{{ news.title }}"></figure>{% endif %}
-            <div class="article-content">{{ news.content|linebreaks }}</div>
-            {% if news.tags.all %}<div class="article-tags"><strong>Темы материала</strong><div class="tag-list">{% for tag in news.tags.all %}<span>#{{ tag.name }}</span>{% endfor %}</div></div>{% endif %}
+        <div class="article-meta">
+          <span class="author"><span class="author__avatar">{{ news.author|first|upper }}</span> {{ news.author }}</span><time datetime="{{ news.date|date:'c' }}"><i class="fa-regular fa-calendar" aria-hidden="true"></i> {{ news.date|date:'d E Y, H:i' }}</time>
         </div>
-        <aside class="share-panel" aria-label="Поделиться новостью">
-            <span>Поделиться</span><div class="share-links">
-                {% if news.link and news.link.whatsapp %}<a class="share-link" href="{{ news.link.whatsapp }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>{% endif %}
-                {% if news.link and news.link.telegram %}<a class="share-link" href="{{ news.link.telegram }}" target="_blank" rel="noopener" aria-label="Telegram"><i class="fa-brands fa-telegram"></i></a>{% endif %}
-                {% if news.link and news.link.instagram %}<a class="share-link" href="{{ news.link.instagram }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>{% endif %}
-                {% if news.link and news.link.facebook %}<a class="share-link" href="{{ news.link.facebook }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>{% endif %}
-            </div><div class="share-panel__note"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Проверено редакцией</div>
-        </aside>
+      </div>
+    </header>
+    <div class="shell article-layout">
+      <div class="article-main">
+        {% if news.image %}
+          <figure class="article-image">
+            <img src="{{ news.image.url }}" alt="{{ news.title }}" />
+          </figure>
+        {% endif %}
+        {% comment %} {% autoescape off %}
+            <div class="article-content">{{ news.content|linebreaks }}</div>
+        {% endautoescape %} {% endcomment %}
+
+        <div class="article-content">{{ news.content|template_mark_safe|linebreaks }}</div>
+
+        {% if news.tags.all %}
+          <div class="article-tags">
+            <strong>Темы материала</strong><div class="tag-list">
+              {% for tag in news.tags.all %}
+                <span>#{{ tag.name }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+      <aside class="share-panel" aria-label="Поделиться новостью">
+        <span>Поделиться</span><div class="share-links">
+          {% if news.link and news.link.whatsapp %}
+            <a class="share-link" href="{{ news.link.whatsapp }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+          {% endif %}
+          {% if news.link and news.link.telegram %}
+            <a class="share-link" href="{{ news.link.telegram }}" target="_blank" rel="noopener" aria-label="Telegram"><i class="fa-brands fa-telegram"></i></a>
+          {% endif %}
+          {% if news.link and news.link.instagram %}
+            <a class="share-link" href="{{ news.link.instagram }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          {% endif %}
+          {% if news.link and news.link.facebook %}
+            <a class="share-link" href="{{ news.link.facebook }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          {% endif %}
+        </div>
+        <div class="share-panel__note">
+          <i class="fa-solid fa-circle-check" aria-hidden="true"></i> Проверено редакцией
+        </div>
+      </aside>
+      {% include 'components/named_category_filter.html' %}
     </div>
-</article>
-{% endblock content %}
+  </article>
+{% endblock %}

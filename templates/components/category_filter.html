@@ -1,0 +1,8 @@
+{% load main_tags %}
+
+<div class="category-list">
+    {% get_categories as categories %}
+    <a class="category-chip {% if not request.resolver_match.kwargs.category_id %}is-active{% endif %}" href="{% url 'list_news' %}"><i class="fa-solid fa-border-all" aria-hidden="true"></i> Все новости</a>
+    {% for category in categories %}<a class="category-chip {% if request.resolver_match.kwargs.category_id == category.id %}is-active{% endif %}" href="{% url 'news_by_category' category_id=category.id %}">{{ category.name }}</a>{% endfor %}
+</div>
+

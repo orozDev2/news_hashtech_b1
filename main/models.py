@@ -1,7 +1,16 @@
 from django.db import models
 
 
-class Category(models.Model):
+class TimeStampedModel(models.Model):
+    
+    class Meta:
+        abstract = True
+
+    created_at = models.DateTimeField('дата добавления', auto_now_add=True)
+    updated_at = models.DateTimeField('дата изменения', auto_now=True)
+
+
+class Category(TimeStampedModel):
 
     class Meta:
         verbose_name = 'категория'
@@ -13,7 +22,7 @@ class Category(models.Model):
         return f'{self.name}'
 
 
-class Tag(models.Model):
+class Tag(TimeStampedModel):
     class Meta:
         verbose_name = 'тег'
         verbose_name_plural = 'теги'
@@ -24,7 +33,7 @@ class Tag(models.Model):
         return f'{self.name}'
 
 
-class NewsLinks(models.Model):
+class NewsLinks(TimeStampedModel):
 
     class Meta:
         verbose_name = 'ссылка новостей'
@@ -39,13 +48,29 @@ class NewsLinks(models.Model):
 
     def __str__(self):
         return f'{self.news.title}'
+    
+
+class NewsImage(TimeStampedModel):
+    
+    class Meta:
+        verbose_name = 'изображение новости'
+        verbose_name_plural = 'изображении новостей'
+        ordering = ('id',)
+        
+    news = models.ForeignKey('main.News', models.CASCADE, related_name='images', verbose_name='новость')
+    file = models.ImageField('изображение', upload_to='news_gallery_images/')
+    
+    
+    def __str__(self):
+        return f'{self.news.title} - {self.id}'
 
 
-class News(models.Model):
+class News(TimeStampedModel):
 
     class Meta:
         verbose_name = 'новость'
         verbose_name_plural = 'новости'
+        ordering = ('-date', '-updated_at')
 
     title = models.CharField(verbose_name='заголовок', max_length=100)
     image = models.ImageField(verbose_name='изображение', upload_to='news_images/', null=True, blank=True)
@@ -54,7 +79,7 @@ class News(models.Model):
     tags = models.ManyToManyField('main.Tag', verbose_name='теги', related_name='news')
     content = models.TextField(verbose_name='контент')
     date = models.DateTimeField(verbose_name='дата добавления', auto_now_add=True)
-    update_date = models.DateTimeField(verbose_name='дата обновления', auto_now=True)
+    views = models.PositiveIntegerField(verbose_name='просмотры', default=0)
     author = models.CharField(verbose_name='автор')
 
     def __str__(self):

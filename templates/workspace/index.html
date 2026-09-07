@@ -54,6 +54,7 @@
                         <div class="workspace-post__meta">
                             {% if item.category %}<span class="workspace-post__category">{{ item.category.name }}</span>{% endif %}
                             <time datetime="{{ item.date|date:'c' }}"><i class="fa-regular fa-clock" aria-hidden="true"></i> {{ item.date|date:"d.m.Y · H:i" }}</time>
+                            <span><i class="fa-regular fa-eye" aria-hidden="true"></i> Просмотры: {{ item.views }}</span>
                         </div>
                         <h3><a href="{% url 'detail_news' news_id=item.id %}">{{ item.title }}</a></h3>
                         <div class="workspace-post__details">

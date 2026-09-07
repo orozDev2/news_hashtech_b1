@@ -34,6 +34,9 @@ def detail_news(request, news_id):
         news = News.objects.get(id=news_id)
     except News.DoesNotExist:
         return render(request, 'extra_pages/not_found_404.html')
+    
+    news.views += 1
+    news.save()
 
     return render(request, 'detail_news.html', {'news': news})
 

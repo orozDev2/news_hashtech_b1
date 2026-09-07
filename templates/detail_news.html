@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load main_filters %}
+{% load main_filters static %}
 
 {% block title %}
   — {{ news.title }}
@@ -15,6 +15,7 @@
         <h1>{{ news.title }}</h1>
         <div class="article-meta">
           <span class="author"><span class="author__avatar">{{ news.author|first|upper }}</span> {{ news.author }}</span><time datetime="{{ news.date|date:'c' }}"><i class="fa-regular fa-calendar" aria-hidden="true"></i> {{ news.date|date:'d E Y, H:i' }}</time>
+          <span><i class="fa-regular fa-eye" aria-hidden="true"></i> Просмотры: {{ news.views }}</span>
         </div>
       </div>
     </header>
@@ -30,6 +31,37 @@
         {% endautoescape %} {% endcomment %}
 
         <div class="article-content">{{ news.content|template_mark_safe|linebreaks }}</div>
+
+        {% with images=news.images.all %}
+          {% if images %}
+            <section class="article-gallery" aria-labelledby="gallery-title" data-gallery>
+              <div class="section-heading section-heading--compact">
+                <h2 id="gallery-title">Фотогалерея</h2>
+                <span class="section-line" aria-hidden="true"></span>
+              </div>
+              <div class="article-gallery__grid">
+                {% for image in images %}
+                  <a class="article-gallery__item" href="{{ image.file.url }}" data-gallery-image aria-label="Открыть фото {{ forloop.counter }}: {{ news.title }}">
+                    <img src="{{ image.file.url }}" alt="{{ news.title }} — фото {{ forloop.counter }}" loading="lazy" decoding="async">
+                    <span aria-hidden="true"><i class="fa-solid fa-expand"></i></span>
+                  </a>
+                {% endfor %}
+              </div>
+              <dialog class="gallery-viewer" aria-label="Просмотр фотогалереи">
+                <div class="gallery-viewer__toolbar">
+                  <span data-gallery-counter aria-live="polite"></span>
+                  <button type="button" data-gallery-close aria-label="Закрыть галерею" autofocus><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+                </div>
+                <div class="gallery-viewer__stage">
+                  <button type="button" data-gallery-prev aria-label="Предыдущее фото"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+                  <img data-gallery-preview alt="">
+                  <button type="button" data-gallery-next aria-label="Следующее фото"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+                </div>
+              </dialog>
+            </section>
+            <script src="{% static 'js/gallery.js' %}" defer></script>
+          {% endif %}
+        {% endwith %}
 
         {% if news.tags.all %}
           <div class="article-tags">

@@ -20,7 +20,7 @@ def list_page(request):
         news = news.filter(title__icontains=search)
 
     page = request.GET.get('page', 1)
-    page_size = request.GET.get('page_size', 3)
+    page_size = request.GET.get('page_size', 12)
 
     pagin = Paginator(news, page_size)
     news = pagin.get_page(page)
@@ -61,7 +61,7 @@ def workspace(request):
     news = News.objects.all()
 
     page = request.GET.get('page', 1)
-    page_size = request.GET.get('page_size', 3)
+    page_size = request.GET.get('page_size', 12)
 
     pagin = Paginator(news, page_size)
     news = pagin.get_page(page)

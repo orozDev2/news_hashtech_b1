@@ -56,10 +56,4 @@ class TagAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'name',)
     search_fields = ('id', 'name')
 
-
-@admin.register(NewsLinks)
-class NewsLinksAdmin(admin.ModelAdmin):
-    list_display = ('id', 'news', 'whatsapp', 'telegram', 'instagram', 'facebook')
-    list_display_links = ('id', 'news',)
-    search_fields = ('id', 'whatsapp', 'telegram', 'instagram', 'facebook')
 # Register your models here.

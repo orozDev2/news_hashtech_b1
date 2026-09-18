@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
+from main.forms import NewsForm
 from main.models import News, Category, Tag
 import datetime
 
@@ -71,35 +72,16 @@ def workspace(request):
 
 
 def create_news(request):
+    form = NewsForm()
 
     if request.method == 'POST':
-        title = request.POST.get('title')
-        image = request.FILES.get('image')
-        author = request.POST.get('author')
-        content = request.POST.get('content')
-        category = Category.objects.get(id=int(request.POST.get('category')))
-        tags_id = list(map(int, request.POST.getlist('tags')))
-        tags = Tag.objects.filter(id__in=tags_id)
-        
-        news = News.objects.create(
-            title=title,
-            author=author,
-            content=content,
-            category=category,
-        )
-        
-        if image:
-            news.image.save(image.name, image)
-        
-        news.tags.add(*tags)
-        
-        news.save()
-        
-        return redirect('workspace')
-        
-    categories = Category.objects.all()
-    tags = Tag.objects.all()
-    return render(request, 'workspace/create_news.html', {'categories': categories, 'tags': tags})
+        form = NewsForm(data=request.POST, files=request.FILES)
+
+        if form.is_valid():
+            form.save()
+            return redirect('workspace')
+
+    return render(request, 'workspace/create_news.html', {'form': form})
 
 
 def delete_news(request, news_id):

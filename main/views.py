@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.core.paginator import Paginator
 from main.forms import NewsForm
 from main.models import News, Category, Tag
@@ -78,8 +79,11 @@ def create_news(request):
         form = NewsForm(data=request.POST, files=request.FILES)
 
         if form.is_valid():
-            form.save()
+            news = form.save()
+            messages.success(request, f'Новость "{news.title}" успешно добавилось.')
             return redirect('workspace')
+        
+        messages.error(request, f'Исправьте ошибки.')
 
     return render(request, 'workspace/create_news.html', {'form': form})
 
@@ -87,41 +91,25 @@ def create_news(request):
 def delete_news(request, news_id):
     news = get_object_or_404(News, pk=news_id)
     news.delete()
+    messages.success(request, f'Новость "{news.title}" успешно удалена.')
     return redirect('workspace')
 
 
 def update_news(request, news_id):
     news = get_object_or_404(News, pk=news_id)
+    form = NewsForm(instance=news)
     
     if request.method == 'POST':
-        news.title = request.POST.get('title')
-        news.author = request.POST.get('author')
-        news.content = request.POST.get('content')
-        news.category = Category.objects.get(id=int(request.POST.get('category')))
+        form = NewsForm(instance=news, data=request.POST, files=request.FILES)
         
-        image = request.FILES.get('image')
+        if form.is_valid():
+            news = form.save()
+            messages.success(request, f'Новость "{news.title}" успешно сохранена.')
+            return redirect('workspace')
         
-        if image:
-            news.image.save(image.name, image)
-        
-
-        tags_id = list(map(int, request.POST.getlist('tags')))
-        tags = Tag.objects.filter(id__in=tags_id)
-        
-        news.tags.clear()
-        # news.tags.remove(tags[0])
-        news.tags.add(*tags)
-        
-        news.save()
-        
-        return redirect('workspace')
-        
-        
-    
-    categories = Category.objects.all()
-    tags = Tag.objects.all()
-    
+        messages.error(request, f'Исправьте ошибки.')
+            
     return render(request, 'workspace/update_news.html', 
-                  {'news': news, 'categories': categories, 'tags': tags})
+                  {'news': news, 'form': form})
 
 # Create your views here.

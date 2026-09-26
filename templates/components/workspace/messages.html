@@ -1,0 +1,21 @@
+{% if messages %}
+  <section class="workspace-messages shell" aria-label="Уведомления" aria-live="polite">
+    {% for message in messages %}
+      {% if message.level_tag == 'error' %}
+        <div class="workspace-message workspace-message--error" role="alert">
+          <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+      {% elif message.level_tag == 'warning' %}
+        <div class="workspace-message workspace-message--warning" role="alert">
+          <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      {% elif message.level_tag == 'success' %}
+        <div class="workspace-message workspace-message--success" role="status">
+          <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+      {% else %}
+        <div class="workspace-message workspace-message--info" role="status">
+          <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+      {% endif %}
+          <p>{{ message }}</p>
+        </div>
+    {% endfor %}
+  </section>
+{% endif %}

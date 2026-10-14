@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator
-from main.forms import NewsForm
+from main.forms import LoginForm, NewsForm
 from main.models import News, Category, Tag
 import datetime
 
@@ -111,5 +113,41 @@ def update_news(request, news_id):
             
     return render(request, 'workspace/update_news.html', 
                   {'news': news, 'form': form})
+    
+
+def login_profile(request):
+    print(request.user)
+    if request.user.is_authenticated:
+        return redirect('/workspace/')
+    
+    form = LoginForm()
+    
+    if request.method == 'POST':
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            
+            # user = User.objects.get(username=username)
+            # if user.check_password(password):
+            #     ...
+            
+            user = authenticate(username=username, password=password)
+            
+            if user:
+                login(request, user)
+                return redirect('/workspace/')
+            
+            messages.error(request, 'Не существует пользователя или неверный пароль!')
+    
+    return render(request, 'auth/login.html', {'form': form})
+
+
+def logout_profile(request):
+    
+    if request.user.is_authenticated:
+        logout(request)
+        
+    return redirect('/news/')
 
 # Create your views here.

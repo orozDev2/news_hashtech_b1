@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %} — Вход{% endblock title %}
+
+{% block content %}
+<section class="auth-page" aria-labelledby="login-title">
+    <div class="shell auth-layout">
+        <div class="auth-intro">
+            <span class="auth-kicker"><span></span> Рабочее пространство</span>
+            <h1 id="login-title">Рады видеть<br>вас <em>снова.</em></h1>
+            <p>Войдите в аккаунт, чтобы продолжить работу с новостями My News.</p>
+            <a class="auth-back-link" href="{% url 'main_page' %}">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                Вернуться к новостям
+            </a>
+            <div class="auth-edition" aria-label="My News, Бишкек, Кыргызстан">
+                <span class="auth-edition__mark">M</span>
+                <span><strong>MY NEWS</strong><small>Бишкек · Кыргызстан</small></span>
+            </div>
+        </div>
+
+        <div class="auth-card">
+            <div class="auth-card__heading">
+                <span class="auth-card__icon"><i class="fa-solid fa-user-lock" aria-hidden="true"></i></span>
+                <div>
+                    <span class="auth-card__eyebrow">Вход в аккаунт</span>
+                    <h2>Авторизация</h2>
+                    <p>Введите имя пользователя и пароль.</p>
+                </div>
+            </div>
+
+            {% if messages %}
+                <div class="auth-alert" role="alert">
+                    <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                    <div>
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <form class="login-form" action="{% url 'login_profile' %}" method="POST" novalidate>
+                {% csrf_token %}
+                <div class="login-field">
+                    <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                    <div class="login-input">
+                        <i class="fa-regular fa-user" aria-hidden="true"></i>
+                        {{ form.username }}
+                    </div>
+                    {% for error in form.username.errors %}<p class="login-field__error">{{ error }}</p>{% endfor %}
+                </div>
+
+                <div class="login-field">
+                    <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+                    <div class="login-input">
+                        <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                        {{ form.password }}
+                    </div>
+                    {% for error in form.password.errors %}<p class="login-field__error">{{ error }}</p>{% endfor %}
+                </div>
+
+                <button class="login-submit" type="submit">
+                    Войти <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </form>
+
+            <p class="auth-card__note"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Вход защищён и доступен участникам редакции.</p>
+        </div>
+    </div>
+</section>
+{% endblock content %}
